@@ -8,7 +8,7 @@ const path = require('path');
 const users = require('./src/fake-db')
 
 const jwt = require('jsonwebtoken');
-let jwtSecret = 'supersecret123'
+let jwtSecret = '1234'
 
 app.use(cors())
 app.use(bodyParser.json())
