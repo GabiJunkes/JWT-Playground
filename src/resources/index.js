@@ -155,7 +155,7 @@ const checkErrorCookies = () => {
     const errorMessage = getCookie("error")
     if (errorMessage){
         setToast(decodeURIComponent(errorMessage), 'danger')
-        removeCookie(errorMessage)
+        removeCookie("error")
     }
 }
 

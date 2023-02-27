@@ -32,16 +32,27 @@ app.get('/dashboard', (req,res) => {
         res.cookie("error", "Unauthorized access. JWT was not found.")
         return res.status(400).redirect("/")
     }
-    const token = req.headers.cookie.split("=")[1]
-    var decoded = jwt.verify(token, jwtSecret);
-    // check if token is successfully decoded
-    if (!decoded) {
-        res.cookie("error", "Unauthorized access. Invalid JWT.")
-        return res.redirect("/")
+    const tokens = req.headers.cookie.split(";")
+    let token = ""
+    for(i=0;i<tokens.length;i++){
+        if (tokens[i].split("=")[0].toString().trim()=="jwt"){
+            token = tokens[i].split("=")[1].toString()
+        }
     }
-    // check if user has permission
-    if (!decoded.admin){
-        res.cookie("error", "Unauthorized access. Admin access is required to access this page.")
+    try{
+        var decoded = jwt.verify(token, jwtSecret);
+        // check if token is successfully decoded
+        if (!decoded) {
+            res.cookie("error", "Unauthorized access. Invalid JWT.")
+            return res.redirect("/")
+        }
+        // check if user has permission
+        if (!decoded.admin){
+            res.cookie("error", "Unauthorized access. Admin access is required to access this page.")
+            return res.redirect("/")
+        }
+    }catch(e){
+        res.cookie("error", "Unauthorized access. Invalid JWT.")
         return res.redirect("/")
     }
     res.sendFile('./src/views/dashboard.html', {root : __dirname})
